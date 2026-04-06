@@ -187,12 +187,12 @@ function submitRSVP(){
   btn.disabled = true;
   btn.innerText = 'Submitting...';
 
-  fetch('https://script.google.com/macros/s/AKfycbw1CnKBrkY-RWNK_vFZwV199nqZ6MeEsTizW8wNa0J6dJn9AJLQff_7NZhFrkNKJE_Y8w/exec', {
+  fetch('YOUR_GOOGLE_SCRIPT_URL', {
     method: 'POST',
     body: JSON.stringify({ name, guests })
   })
   .then(()=>{
-    alert('RSVP Submitted ❤️');
+    showModal();
     document.getElementById('rsvpName').value='';
     document.getElementById('rsvpGuests').value='';
   })
@@ -205,6 +205,26 @@ function submitRSVP(){
   });
 }
 
+</script>
+
+
+<!-- SUCCESS MODAL -->
+<div id="successModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;justify-content:center;align-items:center;z-index:999;">
+  <div style="background:#fff;color:#333;padding:30px;border-radius:16px;text-align:center;max-width:260px;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+    <h2 style="margin:0;font-family:'Playfair Display',serif;">Thank You 💖</h2>
+    <p style="margin:10px 0;">Your RSVP has been received</p>
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+function showModal(){
+  document.getElementById('successModal').style.display='flex';
+}
+
+function closeModal(){
+  document.getElementById('successModal').style.display='none';
+}
 </script>
 
 </body>

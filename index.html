@@ -187,9 +187,13 @@ function submitRSVP(){
   btn.disabled = true;
   btn.innerText = 'Submitting...';
 
-  fetch('https://script.google.com/macros/s/AKfycbw1CnKBrkY-RWNK_vFZwV199nqZ6MeEsTizW8wNa0J6dJn9AJLQff_7NZhFrkNKJE_Y8w/exec', {
+  fetch('https://script.google.com/macros/s/AKfycbx_GOBs6p51p5v0qjEB1ka78quTw2INY6fsNGydQT-pw-yHX8p6ac7v5-FejLyskM4B8w/exec', {
     method: 'POST',
-    body: JSON.stringify({ name, guests })
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name: name, guests: guests })
   })
   .then(()=>{
     showModal();

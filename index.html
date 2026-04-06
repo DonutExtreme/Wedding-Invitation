@@ -3,163 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Cinematic Wedding Invite</title>
+<title>Wedding Invite</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
-body{margin:0;overflow:hidden;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;}
-
-.bg{position:fixed;inset:0;background:linear-gradient(rgba(255,240,235,0.35), rgba(200,170,150,0.35)),url('https://images.unsplash.com/photo-1523438885200-e635ba2c371e');background-size:cover;background-position:center;z-index:-2;transition:transform 6s ease, filter 2s ease;}
-
-.screen{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;flex-direction:column;transition:opacity 1.2s ease;}
+body{margin:0;font-family:'Inter',sans-serif;overflow:hidden;background:#000;color:#fff;}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:opacity 1s ease;min-height:100dvh;}
 .hidden{opacity:0;pointer-events:none;}
 
-.arch-tunnel{display:flex;gap:40px;}
-.arch{width:120px;height:200px;background:url('https://pngimg.com/uploads/wedding_arch/wedding_arch_PNG20.png');background-size:contain;background-repeat:no-repeat;}
+.bg{position:fixed;inset:0;background:url('https://images.unsplash.com/photo-1523438885200-e635ba2c371e') center/cover no-repeat;z-index:-1;transition:transform 4s ease;}
+.overlay{position:fixed;inset:0;background:radial-gradient(circle at center, rgba(0,0,0,0.2), rgba(0,0,0,0.7));z-index:-1;}
 
-.walk{animation:walk 3.5s ease forwards;}
-@keyframes walk{0%{transform:scale(1);}100%{transform:scale(2.4);}}
+.glow{position:absolute;width:300px;height:300px;background:radial-gradient(circle, rgba(255,200,180,0.25), transparent);filter:blur(40px);z-index:-1;}
+.glow.top{top:10%;}
+.glow.bottom{bottom:10%;}
 
-.center-text{position:absolute;bottom:30px;color:white;font-size:14px;}
+.arch{width:22vw;max-width:110px;height:28vh;max-height:180px;background:url('https://pngimg.com/uploads/wedding_arch/wedding_arch_PNG20.png') center/contain no-repeat;}
+.walk{animation:walk 2s ease forwards;}
+@keyframes walk{to{transform:scale(2) translateY(10px);}}
 
-/* PETALS */
-.petal{position:absolute;width:10px;height:10px;background:radial-gradient(circle,#ffd6e0,transparent);border-radius:50%;opacity:0.8;animation:fall linear infinite;}
-@keyframes fall{0%{transform:translateY(-10vh);}100%{transform:translateY(110vh) translateX(40px);}}
+.hero h1{font-family:'Playfair Display',serif;font-size:34px;margin:0;}
+.hero p{opacity:0.8;margin:8px 0 20px;}
 
-.title-reveal{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);color:#fff;text-align:center;opacity:0;transition:opacity 2s ease, transform 2s ease;}
-.title-reveal.show{opacity:1;transform:translate(-50%,-65%);} 
+button{padding:14px 26px;border:none;border-radius:30px;background:#d6a77a;color:#fff;font-size:16px;margin-top:12px;}
+.screen button+button{margin-top:10px;}
 
-.photo-wrap{display:flex;gap:16px;margin-top:15px;}
-.photo{width:120px;height:160px;border-radius:15px;overflow:hidden;transform:scale(0.9);transition:transform 6s ease;}
-.photo img{width:100%;height:100%;object-fit:cover;}
-.photo.zoom{transform:scale(1.05);} /* slow cinematic zoom */
+.banner{position:absolute;top:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#f3e5d8,#e0c3a3);padding:18px 30px;border-radius:14px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.25);color:#5a3e2b;}
+.banner h1{margin:0;font-size:26px;font-family:'Playfair Display',serif;}
+.banner p{margin:6px 0 0;font-size:14px;opacity:0.85;}
 
-button{margin-top:15px;padding:12px 24px;border-radius:30px;border:none;background:#d6a77a;color:white;font-size:15px;}
-.back{position:absolute;top:20px;left:20px;cursor:pointer;font-size:18px;}
+.floral{position:absolute;width:120px;height:120px;background-size:contain;background-repeat:no-repeat;opacity:0.9;}
+.floral.top-left{top:0;left:0;background-image:url('https://pngimg.com/uploads/flowers/flowers_PNG102.png');}
+.floral.top-right{top:0;right:0;transform:scaleX(-1);background-image:url('https://pngimg.com/uploads/flowers/flowers_PNG102.png');}
+.floral.bottom-left{bottom:0;left:0;transform:scaleY(-1);background-image:url('https://pngimg.com/uploads/flowers/flowers_PNG102.png');}
+.floral.bottom-right{bottom:0;right:0;transform:scale(-1,-1);background-image:url('https://pngimg.com/uploads/flowers/flowers_PNG102.png');}
 
-.fade-out{opacity:0 !important;}
+.petal{position:absolute;width:8px;height:8px;background:radial-gradient(circle,#ffd6e0,transparent);border-radius:50%;opacity:0.6;animation:fall linear infinite;}
+@keyframes fall{from{transform:translateY(-10vh);}to{transform:translateY(110vh) translateX(40px);}}
+
+input{padding:12px;border-radius:10px;border:none;margin:6px 0;width:220px;}
+.back{position:absolute;top:20px;left:20px;font-size:18px;}
 </style>
 </head>
 <body>
 
-<div id="bg" class="bg"></div>
+<div class="bg" id="bg"></div>
+<div class="overlay"></div>
 
-<!-- PETALS -->
 <script>
-for(let i=0;i<35;i++){
- const p=document.createElement('div');
- p.className='petal';
- p.style.left=Math.random()*100+'vw';
- p.style.animationDuration=(5+Math.random()*6)+'s';
- document.body.appendChild(p);
+const PETALS = window.innerWidth < 500 ? 18 : 26;
+for(let i=0;i<PETALS;i++){
+  const p=document.createElement('div');
+  p.className='petal';
+  p.style.left=Math.random()*100+'vw';
+  p.style.animationDuration=(5+Math.random()*5)+'s';
+  document.body.appendChild(p);
 }
 </script>
 
 <!-- SCREEN 1 -->
-<div id="screen1" class="screen">
-  <div id="tunnel" class="arch-tunnel">
+<div id="s1" class="screen hero">
+  <div style="display:flex;gap:20px;margin-bottom:20px;">
     <div class="arch"></div>
     <div class="arch"></div>
     <div class="arch"></div>
   </div>
-  <div class="center-text">Tap to enter ✨</div>
+  <h1>You're Invited</h1>
+  <p>Tap to begin</p>
+  <button onclick="start()">Open Invitation</button>
 </div>
 
 <!-- SCREEN 2 -->
-<div id="screen2" class="screen hidden">
-  <div class="back" onclick="goBack(1)">←</div>
-  <div id="title" class="title-reveal">
+<div id="s2" class="screen hidden">
+  <div class="glow top"></div>
+  <div class="glow bottom"></div>
+  <div class="floral top-left"></div>
+  <div class="floral top-right"></div>
+  <div class="floral bottom-left"></div>
+  <div class="floral bottom-right"></div>
+  <div class="back" onclick="back(1)">←</div>
+
+  <div class="banner">
     <h1>Name & Name</h1>
     <p>12 December 2026</p>
-    <div class="photo-wrap">
-      <div class="photo"><img src=""></div>
-      <div class="photo"><img src=""></div>
-    </div>
-    <button onclick="next()">Enter Invitation</button>
+    <div style="font-size:13px;margin-top:6px;">Together with their families</div>
   </div>
+
+  <div style="margin-top:130px;display:flex;gap:14px;justify-content:center;">
+    <div style="width:110px;height:140px;border-radius:14px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,0.3);">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div style="width:110px;height:140px;border-radius:14px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,0.3);">
+      <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+  </div>
+
+  <div style="margin-top:20px;text-align:center;max-width:260px;opacity:0.85;line-height:1.6;">
+    "Two souls, one heart, walking together forever"
+  </div>
+
+  <button onclick="next()">Continue</button>
 </div>
 
 <!-- SCREEN 3 -->
-<div id="screen3" class="screen hidden">
-  <div class="back" onclick="goBack(2)">←</div>
-  <h1>Garden Wedding</h1>
-  <p>Name & Name</p>
-  <p>Date • Time</p>
-  <button onclick="openMap()">Location</button>
-  <button onclick="rsvp()">RSVP</button>
+<div id="s3" class="screen hidden">
+  <div class="glow top"></div>
+  <div class="glow bottom"></div>
+  <div class="floral top-left"></div>
+  <div class="floral top-right"></div>
+  <div class="floral bottom-left"></div>
+  <div class="floral bottom-right"></div>
+  <div class="back" onclick="back(2)">←</div>
+
+  <div class="banner">
+    <h1>Garden Wedding</h1>
+    <p>12 Dec 2026 • 5PM</p>
+    <div style="font-size:13px;margin-top:6px;">A celebration of love & forever</div>
+  </div>
+
+  <div style="margin-top:140px;text-align:center;max-width:260px;opacity:0.85;line-height:1.6;">
+    Join us as we begin our beautiful journey together 💫
+  </div>
+
+  <button onclick="openMap()">View Location</button>
+  <button onclick="showRSVP()">RSVP</button>
+</div>
+
+<!-- SCREEN 4 -->
+<div id="s4" class="screen hidden">
+  <div class="back" onclick="back(3)">←</div>
+  <h2>RSVP</h2>
+  <input placeholder="Your Name">
+  <input placeholder="Guests">
+  <button onclick="submitRSVP()">Submit</button>
 </div>
 
 <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3"></audio>
-<audio id="sfx" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_2b2b3c7c1e.mp3"></audio>
 
 <script>
-const tunnel=document.getElementById('tunnel');
 const bg=document.getElementById('bg');
 const music=document.getElementById('bgm');
-const sfx=document.getElementById('sfx');
-const title=document.getElementById('title');
-const photos=document.querySelectorAll('.photo');
-let played=false;
 
-document.getElementById('screen1').onclick=()=>{
- if(played)return;
- played=true;
+function start(){
+  document.querySelectorAll('.arch').forEach(a=>a.classList.add('walk'));
+  music.play().catch(()=>{});
+  fadeAudio();
+  bg.style.transform='scale(1.15)';
+  setTimeout(()=>switchScreen(1,2),1800);
+}
 
- music.volume=0;
- music.play();
- sfx.play();
- fadeAudio();
+function next(){switchScreen(2,3);} 
+function showRSVP(){switchScreen(3,4);} 
+function back(n){switchScreen(n+1,n);} 
 
- tunnel.classList.add('walk');
- bg.style.transform='scale(1.25) translateY(-20px)';
-
- setTimeout(()=>{
-   switchScreen(1,2);
-   showTitle();
- },3000);
+function switchScreen(from,to){
+  const fromEl=document.getElementById('s'+from);
+  const toEl=document.getElementById('s'+to);
+  if(!fromEl||!toEl) return; // safety
+  fromEl.classList.add('hidden');
+  setTimeout(()=>toEl.classList.remove('hidden'),300);
 }
 
 function fadeAudio(){
- let v=0;
- const i=setInterval(()=>{
-  v+=0.03;
-  music.volume=v;
-  if(v>=0.6) clearInterval(i);
- },200);
+  let v=0;
+  const i=setInterval(()=>{
+    v+=0.03;
+    music.volume=v;
+    if(v>=0.6) clearInterval(i);
+  },200);
 }
 
-function showTitle(){
- title.classList.add('show');
- photos.forEach(p=>p.classList.add('zoom'));
-}
+function openMap(){window.open('https://maps.google.com?q=wedding+location');}
+function submitRSVP(){alert('RSVP Submitted ❤️');}
 
-function next(){
- title.classList.add('fade-out');
- setTimeout(()=>switchScreen(2,3),1200);
-}
-
-function goBack(to){
- if(to===1){switchScreen(2,1);reset();}
- if(to===2){switchScreen(3,2);}
-}
-
-function reset(){
- played=false;
- tunnel.classList.remove('walk');
- bg.style.transform='scale(1)';
- music.pause();
- music.currentTime=0;
- title.classList.remove('show','fade-out');
- photos.forEach(p=>p.classList.remove('zoom'));
-}
-
-function switchScreen(f,t){
- document.getElementById('screen'+f).classList.add('hidden');
- setTimeout(()=>document.getElementById('screen'+t).classList.remove('hidden'),500);
-}
-
-function openMap(){window.open('');}
-function rsvp(){window.open('');}
 </script>
 
 </body>

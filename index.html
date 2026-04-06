@@ -133,9 +133,9 @@ for(let i=0;i<PETALS;i++){
 <div id="s4" class="screen hidden">
   <div class="back" onclick="back(3)">←</div>
   <h2>RSVP</h2>
-  <input placeholder="Your Name">
-  <input placeholder="Guests">
-  <button onclick="submitRSVP()">Submit</button>
+  <input id="rsvpName" placeholder="Your Name">
+  <input id="rsvpGuests" placeholder="Guests">
+  <button id="rsvpBtn" onclick="submitRSVP()">Submit</button>
 </div>
 
 <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3"></audio>
@@ -174,7 +174,36 @@ function fadeAudio(){
 }
 
 function openMap(){window.open('https://maps.google.com?q=wedding+location');}
-function submitRSVP(){alert('RSVP Submitted ❤️');}
+function submitRSVP(){
+  const name = document.getElementById('rsvpName').value.trim();
+  const guests = document.getElementById('rsvpGuests').value.trim();
+  const btn = document.getElementById('rsvpBtn');
+
+  if(!name){
+    alert('Please enter your name');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = 'Submitting...';
+
+  fetch('YOUR_GOOGLE_SCRIPT_URL', {
+    method: 'POST',
+    body: JSON.stringify({ name, guests })
+  })
+  .then(()=>{
+    alert('RSVP Submitted ❤️');
+    document.getElementById('rsvpName').value='';
+    document.getElementById('rsvpGuests').value='';
+  })
+  .catch(()=>{
+    alert('Something went wrong 😢');
+  })
+  .finally(()=>{
+    btn.disabled = false;
+    btn.innerText = 'Submit';
+  });
+}
 
 </script>
 
